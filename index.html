@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="fakeNewsApp">
+<head>
+    <meta charset="UTF-8">
+    <title>fakeNews</title>
+    <link rel="stylesheet" type="text/css" href="css/angular-growl.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/ng-tags-input/ng-tags-input.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/ng-tags-input/ng-tags-input.bootstrap.min.css">
+    <script type="text/javascript" src="libs/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/angular/angular.min.js"></script>
+    <script type="text/javascript" src="libs/angular-growl/angular-growl.min.js"></script>
+    <script type="text/javascript" src="libs/ng-tags-input/ng-tags-input.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/services.js"></script>
+    <script type="text/javascript" src="js/controllers.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body ng-controller="pageController">
+<div class="header">
+    <p class="text-center header_text">Список новостей</p>
+    <button class="news-add btn btn-default" title="Добавить новость" ng-click="clickOpenNewNewsDialog()"><i
+            class="glyphicon glyphicon-plus"></i></button>
+</div>
+<div class="working-table">
+    <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2 full-height">
+        <div class="news-item row" ng-repeat="news in news track by $index">
+            <h4 ng-bind="news.title"></h4>
+            <p ng-bind="news.text"></p>
+            <div class="col-lg-6 col-md-6  col-sm-6 text-left padding-left-none">
+                <span class="prop" ng-bind="news.author"></span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 text-right padding-right-none">
+                <span class="prop">{{news.timestamp | date:'dd.MM.yyyy HH:mm'}}</span>
+            </div>
+        </div>
+
+        <a href="" class="overlay" ng-show="openNewNewsDialog" ng-click="clickCloseNewNewsDialog()"></a>
+        <div ng-show="openNewNewsDialog" class="showMap">
+            <p class="text-center">Новая новость</p>
+            <p>
+                <input type="text" class="form-control" ng-model="newNews.title" placeholder="Введите заголовок"
+                       ng-class="(!newNews.title.length||newNews.title.length<10) ? 'border-color-red' : ''">
+            </p>
+            <p>
+            <textarea class="form-control" ng-model="newNews.text" placeholder="Введите текст"
+                      rows="12" max-rows="12"
+                      ng-class="(!newNews.text.length||newNews.text.length<10) ? 'border-color-red':''"></textarea>
+            </p>
+
+            <tags-input ng-model="selectedAuthor" key-property="authorId" style="margin: 0"
+                        display-property="Name"
+                        placeholder="Введите автора"
+                        replace-spaces-with-dashes="false" add-from-autocomplete-only="true" min-tags="1"
+                        max-tags="1">
+                <auto-complete source="loadAuthors($query)"
+                               min-length="0" debounce-delay="0"
+                               max-results-to-show="10"></auto-complete>
+            </tags-input>
+            <div class="dialog-navigation">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                    <button class="form-control" ng-click="clickCloseNewNewsDialog()">Отменить</button>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <button class="form-control" ng-click="addNewNews()"
+                            ng-disabled="newNews.title.length<10 || newNews.text.length<10 || selectedAuthor.length!==1">
+                        Добавить новость
+                    </button>
+                </div>
+            </div>
+            <a class="close" title="Закрыть" ng-click="clickCloseNewNewsDialog()">x</a>
+        </div>
+
+    </div>
+</div>
+<div growl></div>
+</body>
+</html>
